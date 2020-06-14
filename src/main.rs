@@ -44,8 +44,8 @@ fn main() {
         naive_date_time = naive_date_time + sleep_time_hours;
         if first_iteration {
             std::thread::sleep(calc_first_sleep(naive_date_time)
-                .to_std().
-                unwrap());
+                .to_std()
+                .unwrap());
             first_iteration = !first_iteration;
         } else {
             std::thread::sleep(sleep_time_hours.to_std()
