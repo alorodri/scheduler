@@ -1,28 +1,34 @@
 extern crate chrono;
+
+mod constants {
+    pub static FILENAME: &str = "app.conf";
+}
+
 fn main() {
 
     // checking file configured
-    let filename = "app.conf";
-    let config_lines = std::fs::read_to_string(filename).unwrap();
+    let filename = constants::FILENAME;
+    let config_lines = std::fs::read_to_string(filename)
+        .expect("File app.conf not found. Please, create it on the same directory where the executable.");
     let config_lines: Vec<&str> = config_lines.split('\n').collect();
     
-    let file_to_execute_from_parsed_config: &str = config_lines.get(0).unwrap();
-    let date_to_start_executing_from_parsed_config: &str = config_lines.get(1).unwrap();
-    let hours_to_wait_from_parsed_config: &str = config_lines.get(2).unwrap();
+    let first_line: &str = config_lines.get(0).unwrap();
+    let second_line: &str = config_lines.get(1).unwrap();
+    let third_line: &str = config_lines.get(2).unwrap();
     println!("[Parsing values from app.config]");
-    println!("{}", file_to_execute_from_parsed_config);
-    println!("{}", date_to_start_executing_from_parsed_config);
-    println!("{} hours", hours_to_wait_from_parsed_config);
+    println!("{}", first_line);
+    println!("{}", second_line);
+    println!("{} hours", third_line);
 
     // checking date configured
     println!("[Parsing date configured]");
-    let vector: Vec<&str> = date_to_start_executing_from_parsed_config.split('=').collect();
+    let vector: Vec<&str> = second_line.split('=').collect();
     let date_to_start: &str = vector.get(1).unwrap().trim();
     println!("Parsing {} to time", date_to_start);
 
     // calc diff between current date and date configured, and set the timer
     println!("[Setting timer]");
-    let vector: Vec<&str> = hours_to_wait_from_parsed_config.split('=').collect();
+    let vector: Vec<&str> = third_line.split('=').collect();
     let hours_to_wait: i64 = vector.get(1).unwrap().parse::<i64>().unwrap();
     println!("Timer set succesfully every {} hours", hours_to_wait);
 
@@ -35,7 +41,7 @@ fn main() {
         chrono::NaiveTime::parse_from_str(date_to_start, "%H:%M")
         .unwrap());
 
-    let file_to_execute: Vec<&str> = file_to_execute_from_parsed_config.split('=').collect();
+    let file_to_execute: Vec<&str> = first_line.split('=').collect();
     let file_to_execute: &str = file_to_execute.get(1).unwrap();
 
     let mut first_iteration = true;
